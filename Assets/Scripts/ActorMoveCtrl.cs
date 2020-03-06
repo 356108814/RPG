@@ -30,5 +30,6 @@ public class ActorMoveCtrl : MonoBehaviour
             }
         // }
         controller.Move(moveDirection * Time.deltaTime);
+        controller.gameObject.transform.Rotate(new Vector3(0,1*Time.deltaTime,0)); 
     }
 }
