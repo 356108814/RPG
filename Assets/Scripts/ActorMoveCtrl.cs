@@ -4,32 +4,34 @@ using UnityEngine;
 
 public class ActorMoveCtrl : MonoBehaviour
 {
-    public float speed = 6.0F;
-    public float jumpSpeed = 8.0F;
-
+    public float speed = 2.0F;
     private Vector3 moveDirection = Vector3.zero;
-    private CharacterController controller;
+    private Transform mTransform;
+    private float h;
+    private float v;
 
     // Start is called before the first frame update
     void Start()
     {
-        controller = gameObject.GetComponent<CharacterController>();
+        mTransform = transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // if (controller.isGrounded)
-        // {
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            moveDirection = transform.TransformDirection(moveDirection);
-            moveDirection *= speed;
-            if (Input.GetButton("Jump"))
-            {
-                moveDirection.y = jumpSpeed;
-            }
-        // }
-        controller.Move(moveDirection * Time.deltaTime);
-        controller.gameObject.transform.Rotate(new Vector3(0,1*Time.deltaTime,0)); 
+        h = Input.GetAxis("Horizontal");
+        v = Input.GetAxis("Vertical");
+        moveDirection = new Vector3(h, 0, v);
+        mTransform.LookAt(transform.position + moveDirection); //角色朝向
+        mTransform.Translate(moveDirection * speed * Time.deltaTime, Space.World); //移动
+    }
+
+    void test()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)); //射线
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit)) //发射射线(射线，射线碰撞信息，射线长度，射线会检测的层级)
+        {
+            transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+        }
     }
 }
